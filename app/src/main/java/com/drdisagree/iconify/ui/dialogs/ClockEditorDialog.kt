@@ -182,7 +182,8 @@ class ClockEditorDialog(
             addView(
                 frame,
                 LinearLayout.LayoutParams(previewW, previewH).apply {
-                    topMargin = (12 * density).roundToInt()
+                    // "this." because a local variable named topMargin shadows the field
+                    this.topMargin = (12 * density).roundToInt()
                 }
             )
         }
