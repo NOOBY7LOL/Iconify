@@ -150,6 +150,17 @@
         app:tickInterval="1"
         app:valueFormat="dp" />
 
+    <com.drdisagree.iconify.ui.preferences.SliderPreference
+        android:key="xposed_lockscreenclockoffsetx"
+        android:title="@string/lockscreen_clock_offset_x_title"
+        app:defaultValue="0"
+        app:iconSpaceReserved="false"
+        app:maxVal="300"
+        app:minVal="-300"
+        app:showResetButton="true"
+        app:tickInterval="1"
+        app:valueFormat="dp" />
+
     <com.drdisagree.iconify.ui.preferences.EditTextPreference
         android:key="xposed_lockscreenclockcustomdevicename"
         android:summary="@string/lockscreen_clock_custom_devicename_desc"

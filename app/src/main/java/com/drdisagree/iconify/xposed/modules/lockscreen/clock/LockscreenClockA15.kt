@@ -51,6 +51,7 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_FONT_TEXT_SCALING
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_IMAGE_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STYLE
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_SWITCH
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_OFFSETX
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_USERNAME
 import com.drdisagree.iconify.data.common.Resources.LOCKSCREEN_CLOCK_LAYOUT
@@ -131,6 +132,7 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
     private var clockStyle = 0
     private var topMargin = 100
     private var bottomMargin = 40
+    private var offsetX = 0
     private var textScaleFactor = 1f
     private var reduceFactor = 1f
     private var lineHeight = 0
@@ -187,6 +189,7 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
             clockStyle = getInt(LSCLOCK_STYLE, 0)
             topMargin = getSliderInt(LSCLOCK_TOPMARGIN, 100)
             bottomMargin = getSliderInt(LSCLOCK_BOTTOMMARGIN, 40)
+            offsetX = getSliderInt(LSCLOCK_OFFSETX, 0)
             textScaleFactor = getSliderInt(LSCLOCK_FONT_TEXT_SCALING, 10) / 10.0f
             reduceFactor = if (textScaleFactor > 1f) 0.91f else 1f
             lineHeight = getSliderInt(LSCLOCK_FONT_LINEHEIGHT, 0)
@@ -217,7 +220,8 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
 
             in setOf(
                 LSCLOCK_TOPMARGIN,
-                LSCLOCK_BOTTOMMARGIN
+                LSCLOCK_BOTTOMMARGIN,
+                LSCLOCK_OFFSETX
             ) -> {
                 mLsItemsContainer?.let { applyLayoutConstraints(it) }
                 modifyClockView(currentClockView)
@@ -740,6 +744,7 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
         clockView.layoutParams.width = LinearLayout.LayoutParams.MATCH_PARENT
 
         setMargins(clockView, mContext, 0, topMargin, 0, bottomMargin)
+        clockView.translationX = offsetX * mContext.resources.displayMetrics.density
 
         if (customColorEnabled) {
             findViewWithTagAndChangeColor(clockView, "accent1", mAccentColor1)

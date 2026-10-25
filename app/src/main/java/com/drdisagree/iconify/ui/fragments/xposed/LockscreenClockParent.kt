@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.drdisagree.iconify.BuildConfig
 import com.drdisagree.iconify.Iconify.Companion.appContext
@@ -27,6 +28,7 @@ import com.drdisagree.iconify.databinding.FragmentXposedLockscreenClockBinding
 import com.drdisagree.iconify.ui.activities.MainActivity.Companion.replaceFragment
 import com.drdisagree.iconify.ui.base.BaseFragment
 import com.drdisagree.iconify.ui.base.ControlledPreferenceFragmentCompat
+import com.drdisagree.iconify.ui.dialogs.ClockEditorDialog
 import com.drdisagree.iconify.data.models.ClockCarouselItemModel
 import com.drdisagree.iconify.ui.preferences.preferencesearch.SearchPreferenceResult
 import com.drdisagree.iconify.ui.utils.ViewHelper.setHeader
@@ -76,7 +78,36 @@ class LockscreenClockParent : BaseFragment() {
         binding.lsClockSwitch.isSwitchChecked = getBoolean(LSCLOCK_SWITCH, false)
         binding.lsClockSwitch.setSwitchChangeListener { _: CompoundButton?, isChecked: Boolean ->
             putBoolean(LSCLOCK_SWITCH, isChecked)
+            binding.btnEditClockPosition.isEnabled = isChecked
             lockscreenClockFragment.updateScreen(LSCLOCK_SWITCH)
+        }
+
+        binding.btnEditClockPosition.isEnabled = getBoolean(LSCLOCK_SWITCH, false)
+        binding.btnEditClockPosition.setOnClickListener {
+            val style = getInt(LSCLOCK_STYLE, 0)
+            val layoutRes = resources.getIdentifier(
+                LOCKSCREEN_CLOCK_LAYOUT + style,
+                "layout",
+                BuildConfig.APPLICATION_ID
+            )
+
+            if (style == 0 || layoutRes == 0) {
+                Toast.makeText(
+                    requireContext(),
+                    R.string.lockscreen_clock_editor_pick_style,
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                if (context == null) return@launch
+
+                val bitmap = loadWallpaper(requireContext(), isLockscreen = true).await()
+                if (context == null) return@launch
+
+                ClockEditorDialog(requireContext(), layoutRes, bitmap).show()
+            }
         }
 
         loadAndSetWallpaper()

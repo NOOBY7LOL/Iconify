@@ -92,6 +92,7 @@ object Preferences {
     const val LSCLOCK_STYLE = "xposed_lockscreenclockstyle"
     const val LSCLOCK_TOPMARGIN = "xposed_lockscreenclocktopmargin"
     const val LSCLOCK_BOTTOMMARGIN = "xposed_lockscreenclockbottommargin"
+    const val LSCLOCK_OFFSETX = "xposed_lockscreenclockoffsetx"
     const val LSCLOCK_COLOR_SWITCH = "xposed_lockscreenclockcolor"
     const val LSCLOCK_COLOR_CODE_ACCENT1 = "xposed_lockscreenclockcolorcodeaccent1"
     const val LSCLOCK_COLOR_CODE_ACCENT2 = "xposed_lockscreenclockcolorcodeaccent2"

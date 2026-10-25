@@ -134,6 +134,7 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_IMAGE_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_MOVE_NOTIFICATION_ICONS
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STYLE
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_SWITCH
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_OFFSETX
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_USERNAME
 import com.drdisagree.iconify.data.common.Preferences.NEW_UPDATE_FOUND
@@ -492,6 +493,7 @@ object PrefsHelper {
             LSCLOCK_STYLE,
             LSCLOCK_TOPMARGIN,
             LSCLOCK_BOTTOMMARGIN,
+            LSCLOCK_OFFSETX,
             LSCLOCK_COLOR_SWITCH,
             LSCLOCK_COLOR_CODE_ACCENT1,
             LSCLOCK_COLOR_CODE_ACCENT2,
