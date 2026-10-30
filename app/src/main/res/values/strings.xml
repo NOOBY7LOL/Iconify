@@ -787,7 +787,7 @@
     <string name="lockscreen_clock_offset_x_title">Horizontal Position</string>
     <string name="lockscreen_clock_editor_open">Move and resize clock</string>
     <string name="lockscreen_clock_editor_title">Move and Resize Clock</string>
-    <string name="lockscreen_clock_editor_hint">Drag the clock to move it, pinch to resize</string>
+    <string name="lockscreen_clock_editor_hint">Drag the clock to move it, drag the edges to stretch it, pinch to resize</string>
     <string name="lockscreen_clock_editor_pick_style">Pick a clock style first</string>
     <string name="lockscreen_clock_white_text_title">White Text</string>
     <string name="lockscreen_clock_white_text_desc">Force all colors to be white</string>

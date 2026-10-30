@@ -52,6 +52,8 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_IMAGE_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STYLE
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_OFFSETX
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_X
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_Y
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_USERNAME
 import com.drdisagree.iconify.data.common.Resources.LOCKSCREEN_CLOCK_LAYOUT
@@ -133,6 +135,8 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
     private var topMargin = 100
     private var bottomMargin = 40
     private var offsetX = 0
+    private var stretchX = 100
+    private var stretchY = 100
     private var textScaleFactor = 1f
     private var reduceFactor = 1f
     private var lineHeight = 0
@@ -190,6 +194,8 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
             topMargin = getSliderInt(LSCLOCK_TOPMARGIN, 100)
             bottomMargin = getSliderInt(LSCLOCK_BOTTOMMARGIN, 40)
             offsetX = getSliderInt(LSCLOCK_OFFSETX, 0)
+            stretchX = getSliderInt(LSCLOCK_STRETCH_X, 100)
+            stretchY = getSliderInt(LSCLOCK_STRETCH_Y, 100)
             textScaleFactor = getSliderInt(LSCLOCK_FONT_TEXT_SCALING, 10) / 10.0f
             reduceFactor = if (textScaleFactor > 1f) 0.91f else 1f
             lineHeight = getSliderInt(LSCLOCK_FONT_LINEHEIGHT, 0)
@@ -221,7 +227,9 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
             in setOf(
                 LSCLOCK_TOPMARGIN,
                 LSCLOCK_BOTTOMMARGIN,
-                LSCLOCK_OFFSETX
+                LSCLOCK_OFFSETX,
+                LSCLOCK_STRETCH_X,
+                LSCLOCK_STRETCH_Y
             ) -> {
                 mLsItemsContainer?.let { applyLayoutConstraints(it) }
                 modifyClockView(currentClockView)
@@ -745,6 +753,17 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
 
         setMargins(clockView, mContext, 0, topMargin, 0, bottomMargin)
         clockView.translationX = offsetX * mContext.resources.displayMetrics.density
+        clockView.pivotY = 0f
+        clockView.pivotX = if (clockView.width > 0) {
+            clockView.width / 2f
+        } else {
+            mContext.resources.displayMetrics.widthPixels / 2f
+        }
+        clockView.scaleX = stretchX / 100f
+        clockView.scaleY = stretchY / 100f
+        clockView.post {
+            if (clockView.width > 0) clockView.pivotX = clockView.width / 2f
+        }
 
         if (customColorEnabled) {
             findViewWithTagAndChangeColor(clockView, "accent1", mAccentColor1)

@@ -56,6 +56,8 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_MOVE_NOTIFICATION_
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STYLE
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_OFFSETX
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_X
+import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_Y
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_USERNAME
 import com.drdisagree.iconify.data.common.Resources.LOCKSCREEN_CLOCK_LAYOUT
@@ -171,6 +173,8 @@ class LockscreenClock(context: Context) : ModPack(context) {
                 LSCLOCK_TOPMARGIN,
                 LSCLOCK_BOTTOMMARGIN,
                 LSCLOCK_OFFSETX,
+                LSCLOCK_STRETCH_X,
+                LSCLOCK_STRETCH_Y,
                 LSCLOCK_FONT_LINEHEIGHT,
                 LSCLOCK_FONT_SWITCH,
                 LSCLOCK_IMAGE_SWITCH,
@@ -548,6 +552,8 @@ class LockscreenClock(context: Context) : ModPack(context) {
         val topMargin: Int = Xprefs.getSliderInt(LSCLOCK_TOPMARGIN, 100)
         val bottomMargin: Int = Xprefs.getSliderInt(LSCLOCK_BOTTOMMARGIN, 40)
         val offsetX: Int = Xprefs.getSliderInt(LSCLOCK_OFFSETX, 0)
+        val stretchX: Int = Xprefs.getSliderInt(LSCLOCK_STRETCH_X, 100)
+        val stretchY: Int = Xprefs.getSliderInt(LSCLOCK_STRETCH_Y, 100)
         val textScaleFactor: Float =
             (Xprefs.getSliderInt(LSCLOCK_FONT_TEXT_SCALING, 10) / 10.0).toFloat()
         val reduceFactor = if (textScaleFactor > 1f) 0.91f else 1f
@@ -563,6 +569,17 @@ class LockscreenClock(context: Context) : ModPack(context) {
 
         setMargins(clockView, mContext, 0, topMargin, 0, bottomMargin)
         clockView.translationX = offsetX * mContext.resources.displayMetrics.density
+        clockView.pivotY = 0f
+        clockView.pivotX = if (clockView.width > 0) {
+            clockView.width / 2f
+        } else {
+            mContext.resources.displayMetrics.widthPixels / 2f
+        }
+        clockView.scaleX = stretchX / 100f
+        clockView.scaleY = stretchY / 100f
+        clockView.post {
+            if (clockView.width > 0) clockView.pivotX = clockView.width / 2f
+        }
 
         if (customColorEnabled) {
             findViewWithTagAndChangeColor(clockView, "accent1", mAccentColor1)
