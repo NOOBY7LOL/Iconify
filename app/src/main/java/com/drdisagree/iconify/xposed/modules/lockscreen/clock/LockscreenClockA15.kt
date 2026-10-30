@@ -54,6 +54,7 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_SWITCH
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_OFFSETX
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_X
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_Y
+import com.drdisagree.iconify.xposed.modules.lockscreen.clock.ClockStretchHelper
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_USERNAME
 import com.drdisagree.iconify.data.common.Resources.LOCKSCREEN_CLOCK_LAYOUT
@@ -753,17 +754,7 @@ class LockscreenClockA15(context: Context) : ModPack(context) {
 
         setMargins(clockView, mContext, 0, topMargin, 0, bottomMargin)
         clockView.translationX = offsetX * mContext.resources.displayMetrics.density
-        clockView.pivotY = 0f
-        clockView.pivotX = if (clockView.width > 0) {
-            clockView.width / 2f
-        } else {
-            mContext.resources.displayMetrics.widthPixels / 2f
-        }
-        clockView.scaleX = stretchX / 100f
-        clockView.scaleY = stretchY / 100f
-        clockView.post {
-            if (clockView.width > 0) clockView.pivotX = clockView.width / 2f
-        }
+        ClockStretchHelper.apply(clockView, stretchX, stretchY)
 
         if (customColorEnabled) {
             findViewWithTagAndChangeColor(clockView, "accent1", mAccentColor1)

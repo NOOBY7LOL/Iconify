@@ -26,6 +26,7 @@ import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_STRETCH_Y
 import com.drdisagree.iconify.data.common.Preferences.LSCLOCK_TOPMARGIN
 import com.drdisagree.iconify.data.config.RPrefs
 import com.drdisagree.iconify.ui.preferences.SliderPreference
+import com.drdisagree.iconify.xposed.modules.lockscreen.clock.ClockStretchHelper
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.math.abs
 import kotlin.math.min
@@ -39,6 +40,7 @@ import kotlin.math.roundToInt
  * - Drag a handle on an edge of the box to stretch the clock (width or height on its own).
  *   The opposite edge stays where it is.
  * - Pinch to resize the clock evenly.
+ * The date is not stretched, only the time.
  *
  * On save, the values are written to the same slider preferences the lock screen reads
  * (horizontal position, top margin, text scaling and horizontal / vertical stretch),
@@ -188,6 +190,8 @@ class ClockEditorDialog(
             clockView.translationX = offsetX * density
             clockView.scaleX = clockScaleX()
             clockView.scaleY = clockScaleY()
+            // The date keeps its normal shape, like on the lock screen
+            ClockStretchHelper.keepDatesUnstretched(clockView, stretchX / 100f, stretchY / 100f)
             updateOverlay()
         }
         applyToClock()
