@@ -788,6 +788,13 @@
     <string name="lockscreen_clock_editor_open">Move and resize clock</string>
     <string name="lockscreen_clock_editor_title">Move and Resize Clock</string>
     <string name="lockscreen_clock_editor_hint">Drag the clock to move it, drag the edges to stretch it, pinch to resize</string>
+    <string name="lockscreen_clock_fit_open">Fit clock to subject</string>
+    <string name="lockscreen_clock_fit_title">Fit clock to subject</string>
+    <string name="lockscreen_clock_fit_hint">Paint over the person in your wallpaper, then tap Fit. The clock stretches to fill the space above them.</string>
+    <string name="lockscreen_clock_fit_apply">Fit</string>
+    <string name="lockscreen_clock_fit_clear">Clear</string>
+    <string name="lockscreen_clock_fit_paint_first">Paint over the subject first</string>
+    <string name="lockscreen_clock_fit_no_room">There is no room above the subject</string>
     <string name="lockscreen_clock_editor_pick_style">Pick a clock style first</string>
     <string name="lockscreen_clock_white_text_title">White Text</string>
     <string name="lockscreen_clock_white_text_desc">Force all colors to be white</string>

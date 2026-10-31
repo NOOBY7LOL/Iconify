@@ -29,6 +29,7 @@ import com.drdisagree.iconify.ui.activities.MainActivity.Companion.replaceFragme
 import com.drdisagree.iconify.ui.base.BaseFragment
 import com.drdisagree.iconify.ui.base.ControlledPreferenceFragmentCompat
 import com.drdisagree.iconify.ui.dialogs.ClockEditorDialog
+import com.drdisagree.iconify.ui.dialogs.ClockFitDialog
 import com.drdisagree.iconify.data.models.ClockCarouselItemModel
 import com.drdisagree.iconify.ui.preferences.preferencesearch.SearchPreferenceResult
 import com.drdisagree.iconify.ui.utils.ViewHelper.setHeader
@@ -79,10 +80,13 @@ class LockscreenClockParent : BaseFragment() {
         binding.lsClockSwitch.setSwitchChangeListener { _: CompoundButton?, isChecked: Boolean ->
             putBoolean(LSCLOCK_SWITCH, isChecked)
             binding.btnEditClockPosition.isEnabled = isChecked
+            binding.btnFitClockToSubject.isEnabled = isChecked
             lockscreenClockFragment.updateScreen(LSCLOCK_SWITCH)
         }
 
         binding.btnEditClockPosition.isEnabled = getBoolean(LSCLOCK_SWITCH, false)
+        binding.btnFitClockToSubject.isEnabled = getBoolean(LSCLOCK_SWITCH, false)
+        binding.btnFitClockToSubject.setOnClickListener { openFitDialog() }
         binding.btnEditClockPosition.setOnClickListener {
             val style = getInt(LSCLOCK_STYLE, 0)
             val layoutRes = resources.getIdentifier(
@@ -207,6 +211,33 @@ class LockscreenClockParent : BaseFragment() {
                 SearchPreferenceResult.highlight(lockscreenClockFragment, result.key);
                 break
             }
+        }
+    }
+
+    private fun openFitDialog() {
+        val style = getInt(LSCLOCK_STYLE, 0)
+        val layoutRes = resources.getIdentifier(
+            LOCKSCREEN_CLOCK_LAYOUT + style,
+            "layout",
+            BuildConfig.APPLICATION_ID
+        )
+
+        if (style == 0 || layoutRes == 0) {
+            Toast.makeText(
+                requireContext(),
+                R.string.lockscreen_clock_editor_pick_style,
+                Toast.LENGTH_SHORT
+            ).show()
+            return
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            if (context == null) return@launch
+
+            val bitmap = loadWallpaper(requireContext(), isLockscreen = true).await()
+            if (context == null) return@launch
+
+            ClockFitDialog(requireContext(), layoutRes, bitmap).show()
         }
     }
 

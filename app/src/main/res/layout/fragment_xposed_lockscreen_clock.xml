@@ -43,6 +43,15 @@
                 android:layout_marginBottom="8dp"
                 android:text="@string/lockscreen_clock_editor_open" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_fit_clock_to_subject"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="8dp"
+                android:text="@string/lockscreen_clock_fit_open" />
+
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="match_parent"
