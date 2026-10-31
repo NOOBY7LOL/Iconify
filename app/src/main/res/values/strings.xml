@@ -790,9 +790,11 @@
     <string name="lockscreen_clock_editor_hint">Drag the clock to move it, drag the edges to stretch it, pinch to resize</string>
     <string name="lockscreen_clock_fit_open">Fit clock to subject</string>
     <string name="lockscreen_clock_fit_title">Fit clock to subject</string>
-    <string name="lockscreen_clock_fit_hint">Paint over the person in your wallpaper, then tap Fit. The clock stretches to fill the space above them.</string>
+    <string name="lockscreen_clock_fit_hint">Paint over the person, then tap Fit. The clock stretches to fill the space above them. No wallpaper showing? Tap Import image to use any picture as an example. It is not set as your lock screen.</string>
     <string name="lockscreen_clock_fit_apply">Fit</string>
     <string name="lockscreen_clock_fit_clear">Clear</string>
+    <string name="lockscreen_clock_fit_import">Import image</string>
+    <string name="lockscreen_clock_fit_import_failed">Could not open that image</string>
     <string name="lockscreen_clock_fit_paint_first">Paint over the subject first</string>
     <string name="lockscreen_clock_fit_no_room">There is no room above the subject</string>
     <string name="lockscreen_clock_editor_pick_style">Pick a clock style first</string>

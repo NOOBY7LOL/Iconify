@@ -1,7 +1,11 @@
 package com.drdisagree.iconify.ui.fragments.xposed
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.CompoundButton
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import com.drdisagree.iconify.BuildConfig
 import com.drdisagree.iconify.Iconify.Companion.appContext
@@ -40,13 +45,39 @@ import com.google.android.material.color.DynamicColors
 import com.topjohnwu.superuser.internal.UiThreadHandler.handler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
+import kotlin.math.max
 
 
 class LockscreenClockParent : BaseFragment() {
 
     private lateinit var binding: FragmentXposedLockscreenClockBinding
     private var updateRunnable: Runnable? = null
+    private var fitDialog: ClockFitDialog? = null
+
+    // The picked picture is only an example to paint on, it is not set as the lock screen
+    private val pickReferenceImage =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri == null) return@registerForActivityResult
+            val ctx = context ?: return@registerForActivityResult
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val bitmap = decodeReferenceImage(ctx, uri)
+
+                withContext(Dispatchers.Main) {
+                    if (bitmap != null) {
+                        fitDialog?.setReferenceImage(bitmap)
+                    } else {
+                        Toast.makeText(
+                            ctx,
+                            R.string.lockscreen_clock_fit_import_failed,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -237,7 +268,29 @@ class LockscreenClockParent : BaseFragment() {
             val bitmap = loadWallpaper(requireContext(), isLockscreen = true).await()
             if (context == null) return@launch
 
-            ClockFitDialog(requireContext(), layoutRes, bitmap).show()
+            fitDialog = ClockFitDialog(requireContext(), layoutRes, bitmap) {
+                pickReferenceImage.launch("image/*")
+            }.also { it.show() }
+        }
+    }
+
+    private fun decodeReferenceImage(context: Context, uri: Uri): Bitmap? {
+        return try {
+            val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            context.contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it, null, bounds)
+            }
+
+            // Keep large pictures from using too much memory
+            var sample = 1
+            while (max(bounds.outWidth, bounds.outHeight) / sample > 2048) sample *= 2
+
+            val options = BitmapFactory.Options().apply { inSampleSize = sample }
+            context.contentResolver.openInputStream(uri)?.use {
+                BitmapFactory.decodeStream(it, null, options)
+            }
+        } catch (e: Exception) {
+            null
         }
     }
 

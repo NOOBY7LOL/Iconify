@@ -44,8 +44,24 @@ import kotlin.math.roundToInt
 class ClockFitDialog(
     private val context: Context,
     @LayoutRes private val clockLayout: Int,
-    private val wallpaper: Bitmap?
+    private val wallpaper: Bitmap?,
+    private val onImportImage: () -> Unit
 ) {
+
+    private var backgroundView: ImageView? = null
+    private var highlightView: HighlightView? = null
+
+    /**
+     * Shows a picture the user picked as the background to paint on.
+     * It is only an example to paint on and is not saved or set as the wallpaper.
+     */
+    fun setReferenceImage(bitmap: Bitmap) {
+        backgroundView?.apply {
+            setBackgroundColor(Color.TRANSPARENT)
+            setImageBitmap(bitmap)
+        }
+        highlightView?.clear()
+    }
 
     /** Lets the user paint over the subject with a finger and remembers where it ends. */
     private class HighlightView(context: Context, density: Float) : View(context) {
@@ -129,6 +145,7 @@ class ClockFitDialog(
                 setBackgroundColor(Color.parseColor("#1B1D2B"))
             }
         }
+        backgroundView = background
         content.addView(
             background,
             FrameLayout.LayoutParams(
@@ -157,6 +174,7 @@ class ClockFitDialog(
         content.addView(clockView, clockParams)
 
         val highlight = HighlightView(context, density)
+        highlightView = highlight
         content.addView(
             highlight,
             FrameLayout.LayoutParams(
@@ -246,9 +264,21 @@ class ClockFitDialog(
             gravity = Gravity.CENTER
         }
 
+        val importButton = Button(context, null, android.R.attr.borderlessButtonStyle).apply {
+            text = context.getString(R.string.lockscreen_clock_fit_import)
+            setOnClickListener { onImportImage() }
+        }
+
         val clearButton = Button(context, null, android.R.attr.borderlessButtonStyle).apply {
             text = context.getString(R.string.lockscreen_clock_fit_clear)
             setOnClickListener { highlight.clear() }
+        }
+
+        val buttonRow = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.END
+            addView(importButton)
+            addView(clearButton)
         }
 
         val container = LinearLayout(context).apply {
@@ -264,11 +294,11 @@ class ClockFitDialog(
                 )
             )
             addView(
-                clearButton,
+                buttonRow,
                 LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
-                ).apply { gravity = Gravity.END }
+                )
             )
             addView(frame, LinearLayout.LayoutParams(previewW, previewH))
         }
